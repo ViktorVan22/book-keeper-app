@@ -1,5 +1,5 @@
-import { About } from "../container/About";
-import { Home } from "../container/Home/index";
+import { About } from "@/container/About";
+import { Home } from "@/container/Home/index";
 
 const routes = [
   {

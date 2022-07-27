@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import postCssPxToRem from 'postcss-pxtorem'
+import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
@@ -15,6 +16,13 @@ export default defineConfig({
           propList: ['*']
         })
       ]
+    }
+  },
+  resolve: {
+    extensions: [".ts", ".js", ".tsx", ".jsx"],
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+      'utils': path.resolve(__dirname, 'src/utils')
     }
   }
 })

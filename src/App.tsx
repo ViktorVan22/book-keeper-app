@@ -2,7 +2,7 @@ import { ConfigProvider } from "antd-mobile";
 import zhCN from "antd-mobile/es/locales/zh-CN";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-import { routes } from "./router/index.jsx";
+import { routes } from "@/router";
 import "./App.css";
 
 function App() {
