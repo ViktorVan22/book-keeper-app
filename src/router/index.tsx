@@ -1,6 +1,7 @@
 import { About } from "@/container/About";
 import { Data } from "@/container/Data";
 import { Home } from "@/container/Home/index";
+import { Login } from "@/container/Login";
 import { User } from "@/container/User";
 
 const routes = [
@@ -19,6 +20,10 @@ const routes = [
   {
     path: "/user",
     component: User,
+  },
+  {
+    path: "/login",
+    component: Login,
   },
 ];
 
