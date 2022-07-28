@@ -1,18 +1,12 @@
-import axios, { HeadersDefaults } from "axios";
+import axios, { AxiosRequestHeaders } from "axios";
 
-interface HeaderProperties extends HeadersDefaults {
-    'X-Requested-With': string;
-    'Authorization': string
-}
 
 const MODE = import.meta.env.MODE  // 环境变量
 
-axios.defaults.baseURL = MODE === 'development' ? '/api' : 'production env didn\'t set'
+axios.defaults.baseURL = MODE === 'development' ? 'http://127.0.0.1:7001' : 'production env didn\'t set'
 axios.defaults.withCredentials = true
-axios.defaults.headers = {
-    'X-Requested-With': 'XMLHttpRequest',
-    'Authorization': `${localStorage.getItem('token') || null}`
-} as HeaderProperties
+axios.defaults.headers.head['X-Requested-With'] = 'XMLHttpRequest'
+axios.defaults.headers.common['Authorization'] = `${localStorage.getItem('token') || null}`
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 
 // 拦截器用于拦截每一次请求，对数据做一些“装饰”再 return 回去
