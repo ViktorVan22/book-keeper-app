@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { HTMLAttributes, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TabBar } from "antd-mobile";
 import {
@@ -6,7 +6,6 @@ import {
   PieOutline,
   UserSetOutline,
 } from "antd-mobile-icons";
-import classNames from "classnames";
 
 import s from "./style.module.less";
 
@@ -31,11 +30,11 @@ const tabs = [
   },
 ];
 
-interface Props {
+interface NavProps extends HTMLAttributes<HTMLDivElement> {
   show: boolean;
 }
 
-const Nav: React.FC<Props> = ({ show }) => {
+const Nav: React.FC<NavProps> = ({ show }) => {
   const [active, setActive] = useState("/");
   const navigate = useNavigate();
 
