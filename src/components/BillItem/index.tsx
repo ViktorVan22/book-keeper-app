@@ -27,8 +27,29 @@ interface BillsProps {
 
 const BillItem: React.FC<BillsProps> = ({ bills }) => {
   const [income, setIncome] = useState(0);
-  const [expense, setExpense] = useState(0);
+  const [expenditure, setExpenditure] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const _income = bills.bills
+      .filter(i => i.pay_type === 2)
+      .reduce((curr, item) => {
+        curr += Number(item.amount);
+        return curr;
+      }, 0);
+    setIncome(_income);
+    const _expense = bills.bills
+      .filter(i => i.pay_type === 1)
+      .reduce((curr, item) => {
+        curr += Number(item.amount);
+        return curr;
+      }, 0);
+    setExpenditure(_expense);
+  }, [bills.bills]);
+
+  const goToDetailPage = (item: BillItemProps) => {
+    navigate(`/detail?id=${item.id}`);
+  };
 
   return (
     <div className={s.item}>
@@ -37,11 +58,11 @@ const BillItem: React.FC<BillsProps> = ({ bills }) => {
         <div className={s.money}>
           <span>
             <img src="//s.yezgea02.com/1615953405599/zhi%402x.png" alt="支" />
-            <span>￥200</span>
+            <span>￥{expenditure}</span>
           </span>
           <span>
             <img src="//s.yezgea02.com/1615953405599/shou%402x.png" alt="收" />
-            <span>￥300</span>
+            <span>￥{income}</span>
           </span>
         </div>
       </div>
@@ -49,6 +70,7 @@ const BillItem: React.FC<BillsProps> = ({ bills }) => {
         <Card
           key={bill.id.toString()}
           className={s.bill}
+          onClick={() => goToDetailPage(bill)}
           title={
             <>
               <div>
