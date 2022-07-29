@@ -82,9 +82,9 @@ const BillItem: React.FC<BillsProps> = ({ bills }) => {
                 />
                 <span>{bill.type_name}</span>
               </div>
-              <span style={{ color: "#39be77" }}>{`${
-                bill.pay_type === 1 ? "-" : "+"
-              }${bill.amount}`}</span>
+              <span
+                style={{ color: bill.pay_type === 2 ? "red" : "#39be77" }}
+              >{`${bill.pay_type === 1 ? "-" : "+"}${bill.amount}`}</span>
             </>
           }
         >

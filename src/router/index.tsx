@@ -1,5 +1,6 @@
 import { About } from "@/container/About";
 import { Data } from "@/container/Data";
+import { Detail } from "@/container/Detail";
 import { Home } from "@/container/Home/index";
 import { Login } from "@/container/Login";
 import { User } from "@/container/User";
@@ -24,6 +25,10 @@ const routes = [
   {
     path: "/login",
     component: Login,
+  },
+  {
+    path: "/detail",
+    component: Detail,
   },
 ];
 
