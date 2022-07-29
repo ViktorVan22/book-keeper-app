@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { typeMap } from "../../utils/index";
 
-interface BillItemProps {
+export default interface BillItemProps {
   id: number;
   pay_type: 1 | 2;
   amount: string;

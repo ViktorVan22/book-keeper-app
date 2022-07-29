@@ -1,10 +1,9 @@
-import React, { useState } from "react";
-import { Button } from "antd-mobile";
+import { useState } from "react";
+import { DatePicker, DotLoading, InfiniteScroll } from "antd-mobile";
 
 import s from "./style.module.less";
 import { CalendarOutline, DownOutline } from "antd-mobile-icons";
 import dayjs from "dayjs";
-import { CustomIcon } from "@/components/CustomIcon";
 import { BillItem } from "@/components/BillItem";
 import { get } from "@/utils";
 import { useEffect } from "react";
@@ -15,31 +14,63 @@ interface TypeMap {
 
 const Home = () => {
   const [billList, setBillList] = useState([]); // 帐单列表
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [totalExpenditure, setTotalExpenditure] = useState(0);
   const [currentSelect, setCurrentSelect] = useState<TypeMap>({}); // 当前选择类型
-  const [page, setPage] = useState(1); // 分页
-  const [currentTime, setCurrentTime] = useState(dayjs().format("YYYY-MM"));
+  const [page, setPage] = useState(1); // 当前分页
+  const [totalPage, setTotalPage] = useState(0); // 分页总数
+  const [currentMonth, setCurrentMonth] = useState(dayjs().format("YYYY-MM"));
+  const [hasMore, setHasMore] = useState(true); // 判断是否有更多数据需要加载
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
     getBillList(); // 初始化账单页面
-  }, []);
-  console.log(billList);
+  }, [page, currentMonth]);
+  console.log("totalPage: ", totalPage);
+
+  const loadMore = async () => {
+    setPage(page + 1);
+    setHasMore(page < totalPage);
+  };
+
   const getBillList = async () => {
+    // 因为loadMore是异步函数，所以page会额外再加1，则会造成额外的无用 get 请求
+    // 所以要限制无效请求
+    if (totalPage && page > totalPage) {
+      return;
+    }
     const { data } = await get(
-      `/api/bill/list?page=${page}&page_size=5&date=${currentTime}&type_id=${
+      `/api/bill/list?page=${page}&page_size=5&date=${currentMonth}&type_id=${
         currentSelect.id || "all"
       }`
     );
-    setBillList(data.list);
+    if (page === 1) {
+      setBillList(data.list);
+    } else {
+      setBillList(billList.concat(data.list));
+    }
+    setTotalPage(data.totalPage);
+    setTotalExpenditure(data.totalExpense.toFixed(2));
+    setTotalIncome(data.totalIncome.toFixed(2));
   };
+
+  const toggleDatePicker = () => {
+    setShowDatePicker(!showDatePicker);
+  };
+  const selectMonth = (month: Date) => {
+    setPage(1);
+    setCurrentMonth(dayjs(month).format("YYYY-MM"));
+  };
+
   return (
     <div className={s.home}>
       <div className={s.header}>
         <div className={s.dataWrap}>
           <span className={s.expense}>
-            总支出：<b>￥ 500</b>
+            总支出：<b>￥ {totalExpenditure}</b>
           </span>
           <span className={s.income}>
-            总收入：<b>￥ 2000</b>
+            总收入：<b>￥ {totalIncome}</b>
           </span>
         </div>
         <div className={s.typeWrap}>
@@ -50,9 +81,9 @@ const Home = () => {
             </span>
           </div>
           <div className={s.right}>
-            <span className={s.time}>
-              {currentTime}
-              <CalendarOutline />
+            <span className={s.time} onClick={toggleDatePicker}>
+              {currentMonth}
+              <CalendarOutline onClick={() => {}} />
             </span>
           </div>
         </div>
@@ -61,9 +92,31 @@ const Home = () => {
         {billList.length ? (
           billList.map((bill, index) => <BillItem bills={bill} key={index} />)
         ) : (
-          <div>无法获取账单数据</div>
+          <div>
+            当月没有任何账单
+            <hr />
+            快记上一笔吧~(●'◡'●)
+          </div>
         )}
+        {billList.length ? (
+          <InfiniteScroll loadMore={loadMore} hasMore={hasMore} threshold={50}>
+            {hasMore ? (
+              <div>
+                <span>正在努力加载中</span>
+                <DotLoading />
+              </div>
+            ) : (
+              <span>--- 没有更多记录啦 ---</span>
+            )}
+          </InfiniteScroll>
+        ) : null}
       </div>
+      <DatePicker
+        precision={"month"}
+        visible={showDatePicker}
+        onClose={() => setShowDatePicker(false)}
+        onConfirm={val => selectMonth(val)}
+      />
     </div>
   );
 };

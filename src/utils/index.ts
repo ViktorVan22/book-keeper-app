@@ -53,4 +53,13 @@ export const typeMap = {
     16: {
         icon: "qita",
     },
+
 };
+
+export const TypeColumns = [
+    [],
+    [
+        { label: '支出', value: 'expenditure' },
+        { label: '收入', value: 'income' }
+    ]
+]
