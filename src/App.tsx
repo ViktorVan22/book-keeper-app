@@ -16,7 +16,6 @@ function App() {
   const { pathname } = location;
   const needNav = ["/", "/data", "/user"];
   const [showNav, setShowNav] = useState(false);
-  console.log(pathname);
   // 根据当前路径决定是否显示导航栏
   useEffect(() => {
     setShowNav(needNav.includes(pathname));

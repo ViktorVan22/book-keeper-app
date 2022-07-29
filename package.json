@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.7.0",
     "amfe-flexible": "^2.2.1",
     "antd-mobile": "^5.19.0",
     "antd-mobile-icons": "^0.3.0",

@@ -50,6 +50,7 @@ const Login = () => {
           password: values.password,
         });
         Toast.show("登陆成功");
+        localStorage.setItem("token", data.token);
         window.location.href = "/";
       } else {
         const { data } = await post("/api/user/register", {
