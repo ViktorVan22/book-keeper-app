@@ -7,6 +7,8 @@ import dayjs from "dayjs";
 import { BillItem } from "@/components/BillItem";
 import { get } from "@/utils";
 import { useEffect } from "react";
+import { CustomIcon } from "@/components/CustomIcon";
+import { PopupAddBill } from "@/components/PopupAddBill";
 
 interface TypeMap {
   [id: string]: { [icon: string]: string };
@@ -111,12 +113,16 @@ const Home = () => {
           </InfiniteScroll>
         ) : null}
       </div>
+      <div className={s.add}>
+        <CustomIcon type="tianjia" />
+      </div>
       <DatePicker
         precision={"month"}
         visible={showDatePicker}
         onClose={() => setShowDatePicker(false)}
         onConfirm={val => selectMonth(val)}
       />
+      {/* <PopupAddBill /> */}
     </div>
   );
 };
