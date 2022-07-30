@@ -26,8 +26,9 @@ const Home = () => {
   const [totalPage, setTotalPage] = useState(0); // 分页总数
   const [currentMonth, setCurrentMonth] = useState(dayjs().format("YYYY-MM"));
   const [hasMore, setHasMore] = useState(true); // 判断是否有更多数据需要加载
-  const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTypeList, setShowTypeList] = useState(false);
+  const [showAddBill, setShowAddBill] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
     getBillList(); // 初始化账单页面
@@ -67,6 +68,15 @@ const Home = () => {
   const selectType = (id: "all" | BillItemProps["type_id"]) => {
     setPage(1);
     id === "all" ? setCurrentSelect(undefined) : setCurrentSelect(typeMap[id]);
+  };
+
+  const toggleBillPage = () => {
+    setShowAddBill(true);
+  };
+
+  // 添加或编辑账单后触发刷新
+  const reloadPage = () => {
+    getBillList();
   };
 
   const toggleDatePicker = () => {
@@ -126,7 +136,7 @@ const Home = () => {
           </InfiniteScroll>
         ) : null}
       </div>
-      <div className={s.add}>
+      <div className={s.add} onClick={toggleBillPage}>
         <CustomIcon type="tianjia" />
       </div>
       <PopupType
@@ -134,13 +144,17 @@ const Home = () => {
         onMaskClick={() => setShowTypeList(false)}
         onSelect={item => selectType(item)}
       />
+      <PopupAddBill
+        visible={showAddBill}
+        onMaskClick={() => setShowAddBill(false)}
+        onReload={reloadPage}
+      />
       <DatePicker
         precision={"month"}
         visible={showDatePicker}
         onClose={() => setShowDatePicker(false)}
         onConfirm={val => selectMonth(val)}
       />
-      {/* <PopupAddBill /> */}
     </div>
   );
 };
