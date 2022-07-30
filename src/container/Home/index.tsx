@@ -1,33 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DatePicker, DotLoading, InfiniteScroll } from "antd-mobile";
-
-import s from "./style.module.less";
 import { CalendarOutline, DownOutline } from "antd-mobile-icons";
 import dayjs from "dayjs";
-import { BillItem } from "@/components/BillItem";
+
+import s from "./style.module.less";
+
+import BillItemProps, { BillItem } from "@/components/BillItem";
 import { get } from "@/utils";
-import { useEffect } from "react";
 import { CustomIcon } from "@/components/CustomIcon";
 import { PopupAddBill } from "@/components/PopupAddBill";
+import { PopupType } from "@/components/PopupType";
+import { typeMap } from "../../utils/index";
 
-interface TypeMap {
-  [id: string]: { [icon: string]: string };
+interface TypeProps {
+  icon: string;
+  name: string;
 }
 
 const Home = () => {
   const [billList, setBillList] = useState([]); // 帐单列表
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpenditure, setTotalExpenditure] = useState(0);
-  const [currentSelect, setCurrentSelect] = useState<TypeMap>({}); // 当前选择类型
+  const [currentSelect, setCurrentSelect] = useState<TypeProps | undefined>(); // 当前选择类型
   const [page, setPage] = useState(1); // 当前分页
   const [totalPage, setTotalPage] = useState(0); // 分页总数
   const [currentMonth, setCurrentMonth] = useState(dayjs().format("YYYY-MM"));
   const [hasMore, setHasMore] = useState(true); // 判断是否有更多数据需要加载
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTypeList, setShowTypeList] = useState(false);
 
   useEffect(() => {
     getBillList(); // 初始化账单页面
-  }, [page, currentMonth]);
+  }, [page, currentMonth, currentSelect]);
   console.log("totalPage: ", totalPage);
 
   const loadMore = async () => {
@@ -43,7 +47,7 @@ const Home = () => {
     }
     const { data } = await get(
       `/api/bill/list?page=${page}&page_size=5&date=${currentMonth}&type_id=${
-        currentSelect.id || "all"
+        currentSelect || "all"
       }`
     );
     if (page === 1) {
@@ -54,6 +58,15 @@ const Home = () => {
     setTotalPage(data.totalPage);
     setTotalExpenditure(data.totalExpense.toFixed(2));
     setTotalIncome(data.totalIncome.toFixed(2));
+  };
+
+  const toggleTypeList = () => {
+    setShowTypeList(true);
+  };
+
+  const selectType = (id: "all" | BillItemProps["type_id"]) => {
+    setPage(1);
+    id === "all" ? setCurrentSelect(undefined) : setCurrentSelect(typeMap[id]);
   };
 
   const toggleDatePicker = () => {
@@ -77,15 +90,15 @@ const Home = () => {
         </div>
         <div className={s.typeWrap}>
           <div className={s.left}>
-            <span className={s.title}>
-              全部类型
+            <span className={s.title} onClick={toggleTypeList}>
+              {currentSelect ? currentSelect.name : "全部类型"}
               <DownOutline />
             </span>
           </div>
           <div className={s.right}>
             <span className={s.time} onClick={toggleDatePicker}>
               {currentMonth}
-              <CalendarOutline onClick={() => {}} />
+              <CalendarOutline />
             </span>
           </div>
         </div>
@@ -116,6 +129,11 @@ const Home = () => {
       <div className={s.add}>
         <CustomIcon type="tianjia" />
       </div>
+      <PopupType
+        visible={showTypeList}
+        onMaskClick={() => setShowTypeList(false)}
+        onSelect={item => selectType(item)}
+      />
       <DatePicker
         precision={"month"}
         visible={showDatePicker}
