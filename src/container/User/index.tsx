@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import s from "./style.module.less";
 import { CustomIcon } from "@/components/CustomIcon";
 
-interface UserProps {
+export default interface UserProps {
   id: number;
   username: string;
   signature: string;
@@ -24,7 +24,7 @@ const User = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<UserProps>(); // 用户
   const [avatar, setAvatar] = useState(""); // 头像
-
+  const [signature, setSignature] = useState("");
   useEffect(() => {
     getUserInfo();
   }, []);
@@ -33,6 +33,7 @@ const User = () => {
     const { data } = await get("/api/user/get_userinfo");
     setUser(data);
     setAvatar(data.avatar);
+    setSignature(data.signature);
   };
 
   const logout = async () => {

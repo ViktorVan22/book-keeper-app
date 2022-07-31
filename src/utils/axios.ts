@@ -27,3 +27,15 @@ axios.interceptors.response.use(res => {
 })
 
 export default axios
+
+
+export const baseUrl: string = MODE === 'development' ? 'http://127.0.0.1:7001' : 'production env didn\'t set'
+
+export const imgUrlTrans = (url: string) => {
+    if (url && url.startsWith('http')) {
+        return url
+    } else {
+        url = `${baseUrl}${url}`
+        return url
+    }
+}

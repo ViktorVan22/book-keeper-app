@@ -4,6 +4,7 @@ import { Detail } from "@/container/Detail";
 import { Home } from "@/container/Home/index";
 import { Login } from "@/container/Login";
 import { User } from "@/container/User";
+import { UserInfo } from "@/container/UserInfo";
 
 const routes = [
   {
@@ -29,6 +30,10 @@ const routes = [
   {
     path: "/detail",
     component: Detail,
+  },
+  {
+    path: "/userinfo",
+    component: UserInfo,
   },
 ];
 
