@@ -4,6 +4,11 @@ import dayjs from "dayjs";
 
 import s from "./style.module.less";
 import BillItemProps from "@/components/BillItem";
+import { CalendarOutline } from "antd-mobile-icons";
+import classNames from "classnames";
+import { CustomIcon } from "@/components/CustomIcon";
+import { typeMap } from "../../utils/index";
+import { DatePicker, ProgressBar } from "antd-mobile";
 
 let proportionChart = null;
 
@@ -23,14 +28,11 @@ const Data = () => {
   const [totalIncome, setTotalIncome] = useState(0); // 总收入
   const [expenditureData, setExpenditureData] = useState([]); // 支出数据
   const [incomeData, setIncomeData] = useState([]); // 收入数据
-  const [pieType, setPieType] = useState<"expenditure" | "income">(
-    "expenditure"
-  ); // 饼图的「收入」和「支出」控制
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
     getData();
   }, [currentMonth]);
-
   const getData = async () => {
     const { data } = await get(`/api/bill/data?date=${currentMonth}`);
     setTotalExpenditure(data.total_expense);
@@ -47,7 +49,92 @@ const Data = () => {
     setIncomeData(income_data);
   };
 
-  return <div>Data</div>;
+  return (
+    <div className={s.data}>
+      <div className={s.total}>
+        <div className={s.time} onClick={() => setShowDatePicker(true)}>
+          <span>{currentMonth}</span>
+          <CalendarOutline />
+        </div>
+        <div className={s.title}>共支出</div>
+        <div className={s.expense}>￥{totalExpenditure}</div>
+        <div className={s.income}>共收入¥{totalIncome}</div>
+      </div>
+      <div className={s.structure}>
+        <div className={s.head}>
+          <span className={s.title}>收支构成</span>
+          <div className={s.tab}>
+            <span
+              onClick={() => setTotalType("expenditure")}
+              className={classNames({
+                [s.expense]: true,
+                [s.active]: totalType == "expenditure",
+              })}
+            >
+              支出
+            </span>
+            <span
+              onClick={() => setTotalType("income")}
+              className={classNames({
+                [s.income]: true,
+                [s.active]: totalType == "income",
+              })}
+            >
+              收入
+            </span>
+          </div>
+        </div>
+        <div className={s.content}>
+          {(totalType === "expenditure" ? expenditureData : incomeData).map(
+            (item: TotalDataProps) => (
+              <div key={item.type_id} className={s.item}>
+                <div className={s.left}>
+                  <div className={s.type}>
+                    <span
+                      className={classNames({
+                        [s.expense]: totalType === "expenditure",
+                        [s.income]: totalType === "income",
+                      })}
+                    >
+                      <CustomIcon
+                        type={
+                          item.type_id ? typeMap[item.type_id].icon : "canyin"
+                        }
+                      />
+                    </span>
+                    <span className={s.name}>{item.type_name}</span>
+                  </div>
+                  <div className={s.progress}>￥{item.number.toFixed(2)}</div>
+                </div>
+                <div className={s.right}>
+                  <div className={s.percent}>
+                    <ProgressBar
+                      text
+                      percent={
+                        Math.floor(
+                          (item.number /
+                            (totalType == "expenditure"
+                              ? totalExpenditure
+                              : totalIncome)) *
+                            10000
+                        ) / 100
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+            )
+          )}
+        </div>
+      </div>
+      <DatePicker
+        visible={showDatePicker}
+        onClose={() => setShowDatePicker(false)}
+        onConfirm={val => setCurrentMonth(dayjs(val).format("YYYY-MM"))}
+        precision="month"
+      />
+    </div>
+  );
 };
 
 export { Data };
