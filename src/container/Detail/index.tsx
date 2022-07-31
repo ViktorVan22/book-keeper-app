@@ -11,12 +11,14 @@ import { Header } from "@/components/Header";
 import BillItemProps from "@/components/BillItem";
 import { get, post, typeMap } from "@/utils";
 import { CustomIcon } from "@/components/CustomIcon";
+import { PopupAddBill } from "@/components/PopupAddBill";
 
 const Detail = () => {
   const location = useLocation();
   const { id } = queryString.parse(location.search);
   const [detail, setDetail] = useState<BillItemProps>();
   const navigate = useNavigate();
+  const [showEdit, setShowEdit] = useState(false);
 
   useEffect(() => {
     getDetail();
@@ -60,6 +62,7 @@ const Detail = () => {
         <div className={s.type}>
           <span
             className={classNames({
+              [s.typeIcon]: true,
               [s.expense]: detail?.pay_type === 1,
               [s.income]: detail?.pay_type === 2,
             })}
@@ -71,7 +74,7 @@ const Detail = () => {
               }
             />
           </span>
-          <span>{detail?.type_name || ""}</span>
+          <span className={s.typeName}>{detail?.type_name || ""}</span>
         </div>
         {detail?.pay_type === 1 ? (
           <div className={classNames(s.amount, s.expense)}>
@@ -99,12 +102,18 @@ const Detail = () => {
             <CustomIcon type="shanchu" />
             删除
           </span>
-          <span className={s.operator}>
+          <span className={s.operator} onClick={() => setShowEdit(true)}>
             <CustomIcon type="tianjia" />
             编辑
           </span>
         </div>
       </div>
+      <PopupAddBill
+        visible={showEdit}
+        onMaskClick={() => setShowEdit(false)}
+        detail={detail}
+        onReload={getDetail}
+      />
     </div>
   );
 };

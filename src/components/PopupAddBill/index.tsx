@@ -23,9 +23,15 @@ interface Props {
   visible: boolean;
   onMaskClick: () => void; // 关闭弹窗：点击遮罩或者其他关闭功能共用该函数
   onReload?: () => void; // 刷新回调
+  detail?: BillItemProps;
 }
 
-const PopupAddBill = ({ visible, onMaskClick, onReload }: Props) => {
+// type BillParamsProps = Omit<BillItemProps, "user_id"|"date">;
+type BillParamsProps = {
+  date: number;
+} & Omit<BillItemProps, "user_id" | "date">;
+
+const PopupAddBill = ({ visible, onMaskClick, onReload, detail }: Props) => {
   const [expenditure, setExpenditure] = useState([]);
   const [income, setIncome] = useState([]);
   const [payType, setPayType] = useState<"expenditure" | "income">(
@@ -39,6 +45,23 @@ const PopupAddBill = ({ visible, onMaskClick, onReload }: Props) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showKeyboard, setShowKeyboard] = useState(true); // 控制数字键盘显示
   const [showRemark, setShowRemark] = useState(false);
+  const billId = detail?.id;
+  // detail && console.log("detail: ", detail);
+
+  useEffect(() => {
+    if (detail && detail.id) {
+      setPayType(detail.pay_type === 1 ? "expenditure" : "income");
+      setCurrentType(
+        detail?.pay_type === 1
+          ? expenditure[detail.type_id - 1]
+          : income[detail.type_id - 11]
+      );
+      setRemark(detail.remark);
+      setAmount(detail.amount);
+      setDate(new Date(Number(detail.date)));
+      setShowRemark(true);
+    }
+  }, [detail]);
 
   useEffect(() => {
     getTypeList();
@@ -51,7 +74,10 @@ const PopupAddBill = ({ visible, onMaskClick, onReload }: Props) => {
     const _expenditure = list.filter((i: TypeProps) => i.type === 1);
     setExpenditure(_expenditure);
     setIncome(list.filter((i: TypeProps) => i.type === 2));
-    setCurrentType(_expenditure[0]);
+    if (!billId) {
+      // billId不存在的情况表明是新建账单，类型默认设定为支出
+      setCurrentType(_expenditure[0]);
+    }
   };
 
   const changeType = (type: "expenditure" | "income") => {
@@ -71,7 +97,7 @@ const PopupAddBill = ({ visible, onMaskClick, onReload }: Props) => {
       amount === "0" ? setAmount(value) : setAmount(amount + value);
     },
     onConfirm: () => {
-      addBill();
+      billHandler();
     },
     onDelete: () => {
       if (amount !== "0" && amount.length === 1) {
@@ -82,38 +108,45 @@ const PopupAddBill = ({ visible, onMaskClick, onReload }: Props) => {
     },
   };
 
-  const addBill = async () => {
+  const billHandler = async () => {
     if (amount === "0") {
       Toast.show("请输入具体金额");
       return;
     }
-    const params = {
+    const params: BillParamsProps = {
       amount: Number(amount).toFixed(2),
-      type_id: currentType?.id,
-      type_name: currentType?.name,
+      type_id: currentType?.id!,
+      type_name: currentType?.name!,
       date: dayjs(date).unix() * 1000,
       pay_type: payType === "expenditure" ? 1 : 2,
       remark: remark,
     };
-
-    const result = await post("/api/bill/add", params);
-    setAmount("0");
-    setPayType("expenditure");
-    setCurrentType(expenditure[0]);
-    setDate(new Date());
-    setRemark("");
-    setTimeout(() => {
+    if (billId) {
+      // 编辑账单
+      params.id = billId;
+      const result = await post("/api/bill/update", params);
+      result
+        ? Toast.show("修改成功")
+        : Toast.show("修改失败，服务器出了会儿小差，请稍后再试...");
+    } else {
+      // 新建账单
+      const result = await post("/api/bill/add", params);
+      setAmount("0");
+      setPayType("expenditure");
+      setCurrentType(expenditure[0]);
+      setDate(new Date());
+      setRemark("");
       result
         ? Toast.show("添加成功")
         : Toast.show("添加失败，服务端可能出了点小差，请稍后再试");
-    });
+    }
 
     onMaskClick();
     onReload && onReload();
   };
 
   return (
-    <Popup visible={visible} onMaskClick={onMaskClick}>
+    <Popup destroyOnClose={true} visible={visible} onMaskClick={onMaskClick}>
       <div className={s.addWrap}>
         <header className={s.header}>
           <span className={s.close} onClick={onMaskClick}>

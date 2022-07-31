@@ -74,11 +74,6 @@ const Home = () => {
     setShowAddBill(true);
   };
 
-  // 添加或编辑账单后触发刷新
-  const reloadPage = () => {
-    getBillList();
-  };
-
   const toggleDatePicker = () => {
     setShowDatePicker(!showDatePicker);
   };
@@ -147,7 +142,7 @@ const Home = () => {
       <PopupAddBill
         visible={showAddBill}
         onMaskClick={() => setShowAddBill(false)}
-        onReload={reloadPage}
+        onReload={getBillList}
       />
       <DatePicker
         precision={"month"}

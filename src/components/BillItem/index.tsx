@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { typeMap } from "../../utils/index";
 
 export default interface BillItemProps {
-  id: number;
+  id?: number;
   pay_type: 1 | 2;
   amount: string;
   date: string;
@@ -68,7 +68,7 @@ const BillItem: React.FC<BillsProps> = ({ bills }) => {
       </div>
       {bills.bills.map(bill => (
         <Card
-          key={bill.id.toString()}
+          key={bill.id!.toString()}
           className={s.bill}
           onClick={() => goToDetailPage(bill)}
           title={

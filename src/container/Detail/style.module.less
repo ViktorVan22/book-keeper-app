@@ -15,15 +15,21 @@
     align-items: center;
     .type {
       padding: 24px 0 12px 0;
-      span:nth-of-type(1) {
+      .type-icon {
         display: inline-block;
-        width: 22px;
-        height: 22px;
+        width: 28px;
+        height: 28px;
         color: #fff;
         border-radius: 50%;
         text-align: center;
         line-height: 24px;
         margin-right: 8px;
+        >span{
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100%;
+        }
       }
       .expense {
         background-color: #007fff;
@@ -32,7 +38,7 @@
         background-color: rgb(236, 190, 37);
       }
       .iconfont {
-        font-size: 16px;
+        font-size: 18px;
       }
     }
     .amount {
