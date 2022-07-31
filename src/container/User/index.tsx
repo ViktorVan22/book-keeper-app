@@ -18,6 +18,7 @@ export default interface UserProps {
   signature: string;
   avatar: string;
   createdAt: string;
+  password: string;
 }
 
 const User = () => {

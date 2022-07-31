@@ -1,4 +1,5 @@
 import { About } from "@/container/About";
+import { Account } from "@/container/Account";
 import { Data } from "@/container/Data";
 import { Detail } from "@/container/Detail";
 import { Home } from "@/container/Home/index";
@@ -34,6 +35,10 @@ const routes = [
   {
     path: "/userinfo",
     component: UserInfo,
+  },
+  {
+    path: "/account",
+    component: Account,
   },
 ];
 
