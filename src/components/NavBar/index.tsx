@@ -1,5 +1,5 @@
 import React, { HTMLAttributes, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { TabBar } from "antd-mobile";
 import {
   PayCircleOutline,
@@ -35,15 +35,15 @@ interface NavProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const Nav: React.FC<NavProps> = ({ show }) => {
-  const [active, setActive] = useState("/");
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const changeTab = (path: string): void => {
-    setActive(path);
     navigate(path);
   };
+
   return show ? (
-    <TabBar className={s.tab} onChange={changeTab}>
+    <TabBar className={s.tab} onChange={changeTab} activeKey={pathname}>
       {tabs.map(tab => (
         <TabBar.Item key={tab.route} icon={tab.icon} title={tab.title} />
       ))}

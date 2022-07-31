@@ -31,6 +31,7 @@ const UserInfo = () => {
     const { data } = await get("/api/user/get_userinfo");
     setUser(data);
     setAvatar(data.avatar);
+    setSignature(data.signature);
   };
 
   //   const handleSelect

@@ -33,7 +33,6 @@ const Home = () => {
   useEffect(() => {
     getBillList(); // 初始化账单页面
   }, [page, currentMonth, currentSelect]);
-  console.log("totalPage: ", totalPage);
 
   const loadMore = async () => {
     setPage(page + 1);
