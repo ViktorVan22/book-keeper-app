@@ -29,7 +29,7 @@ axios.interceptors.response.use(res => {
 export default axios
 
 
-export const baseUrl: string = MODE === 'development' ? 'http://127.0.0.1:7001' : 'http://8.130.17.206'
+export const baseUrl: string = MODE === 'development' ? 'http://127.0.0.1:7001' : 'http://8.130.17.206:7001'
 
 export const imgUrlTrans = (url: string) => {
     if (url && url.startsWith('http')) {
