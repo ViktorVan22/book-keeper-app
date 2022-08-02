@@ -11,6 +11,7 @@ import { CustomIcon } from "@/components/CustomIcon";
 import { PopupAddBill } from "@/components/PopupAddBill";
 import { PopupType } from "@/components/PopupType";
 import { typeMap } from "../../utils/index";
+import { useNavigate } from "react-router-dom";
 
 interface TypeProps {
   icon: string;
@@ -29,6 +30,13 @@ const Home = () => {
   const [showTypeList, setShowTypeList] = useState(false);
   const [showAddBill, setShowAddBill] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "./login";
+    }
+  }, []);
 
   useEffect(() => {
     getBillList(); // 初始化账单页面

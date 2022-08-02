@@ -7,39 +7,37 @@ import { Login } from "@/container/Login";
 import { User } from "@/container/User";
 import { UserInfo } from "@/container/UserInfo";
 
-const root_path = "book-keeper-website";
-
 const routes = [
   {
-    path: root_path + "/",
+    path: "/",
     component: Home,
   },
   {
-    path: root_path + "/about",
+    path: "/about",
     component: About,
   },
   {
-    path: root_path + "/data",
+    path: "/data",
     component: Data,
   },
   {
-    path: root_path + "/user",
+    path: "/user",
     component: User,
   },
   {
-    path: root_path + "/login",
+    path: "/login",
     component: Login,
   },
   {
-    path: root_path + "/detail",
+    path: "/detail",
     component: Detail,
   },
   {
-    path: root_path + "/userinfo",
+    path: "/userinfo",
     component: UserInfo,
   },
   {
-    path: root_path + "/account",
+    path: "/account",
     component: Account,
   },
 ];
