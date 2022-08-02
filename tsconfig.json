@@ -21,5 +21,6 @@
     }
   },
   "include": ["src"],
+  "exclude": ["ecosystem.config.js", "pm-server.js"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

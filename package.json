@@ -2,8 +2,7 @@
   "name": "book-keeper-app",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
-  "homepage": "https://viktorvan22.github.io/book-keeper-app/",
+  "type": "commonjs",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
