@@ -141,8 +141,10 @@ const PopupAddBill = ({ visible, onMaskClick, onReload, detail }: Props) => {
         : Toast.show("添加失败，服务端可能出了点小差，请稍后再试");
     }
 
+    setTimeout(() => {
+      onReload && onReload();
+    }, 0);
     onMaskClick();
-    onReload && onReload();
   };
 
   return (
