@@ -11,6 +11,7 @@
 后端代码 GitHub：https://github.com/ViktorVan22/book-keeper-server
 
 前端技术栈：`React`+`TypeScript`+`Vite`  
+组件库：`antd-mobile` + `ant-design/icons`  
 异步请求处理：`axios`  
 自动部署工具：`pm2`
 
